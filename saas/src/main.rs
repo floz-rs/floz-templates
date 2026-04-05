@@ -1,7 +1,7 @@
 use floz::prelude::*;
 
 mod app;
-
+mod middleware;
 #[derive(Clone)]
 pub struct AppState {
     pub default_tenant_id: String,
@@ -19,10 +19,16 @@ async fn main() -> std::io::Result<()> {
                 .with_middleware(Cors::permissive())
                 .with_middleware(RequestTrace::default())
                 .with_middleware(Compression::gzip())
+                .with_middleware(middleware::auth::RequireAuth)
+                .with_middleware(middleware::tenant::RequireTenant)
         )
-        .on_start(|_ctx| async move {
+        .on_start(|ctx| async move {
             info!("🔐 Auth module enabled");
-            info!("⚡ Background workers enabled");
+            info!("🏢 Multi-tenant architecture enabled");
+
+            // Setup SQLite DB
+            app::user::model::create_table(&ctx.db()).await;
+            app::org::model::create_table(&ctx.db()).await;
         })
         .run()
         .await
