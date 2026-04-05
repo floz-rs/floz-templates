@@ -11,7 +11,7 @@ postgres = ["floz/postgres"]
 
 
 [dependencies]
-floz = { path = "../../floz", version = "0.1.1", features = ["default"] }
+floz = { version = "0.1.2", features = ["default"] }
 tokio = { version = "1", features = ["full", "macros"] }
 ntex = "3.7.1"
 tracing = "0.1"
