@@ -13,6 +13,7 @@ async fn main() -> std::io::Result<()> {
         .with(AppState {
             default_tenant_id: "system".to_string(),
         })
+        .with_worker(2)
         .server(
             ServerConfig::new()
                 .with_default_port(3030)
