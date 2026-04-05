@@ -23,7 +23,7 @@ async fn main() -> std::io::Result<()> {
                 .with_middleware(middleware::auth::RequireAuth)
                 .with_middleware(middleware::tenant::RequireTenant)
         )
-        .on_start(|ctx| async move {
+        .on_start(|ctx: AppContext| async move {
             info!("🔐 Auth module enabled");
             info!("🏢 Multi-tenant architecture enabled");
 

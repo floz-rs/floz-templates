@@ -4,8 +4,14 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 
+[features]
+default = ["postgres", "openapi"]
+openapi = ["floz/openapi"]
+postgres = ["floz/postgres"]
+
+
 [dependencies]
-floz = { version = "0.1.0", features = ["full"] }
+floz = { path = "../../floz", version = "0.1.1", features = ["full", "postgres"] }
 tokio = { version = "1", features = ["full", "macros"] }
 sqlx = { version = "0.8", features = ["runtime-tokio", "postgres"] }
 ntex = "3.7.1"
