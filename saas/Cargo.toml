@@ -7,7 +7,7 @@ publish = false
 [dependencies]
 floz = { path = "../../floz", features = ["full"] }
 tokio = { workspace = true, features = ["full", "macros"] }
-sqlx = { workspace = true, features = ["runtime-tokio", "postgres"] }
+sqlx = { workspace = true, features = ["runtime-tokio", "sqlite"] }
 ntex = { workspace = true }
 utoipa = { workspace = true }
 tracing = { workspace = true }
