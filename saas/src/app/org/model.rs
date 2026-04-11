@@ -8,6 +8,9 @@ pub struct Organization {
     pub slug: Text,
     pub tier: Text,
 
+    #[rel(has_many(model = "crate::app::user_role::UserRole", foreign_key = "org_id"))]
+    pub user_roles: Vec<crate::app::user_role::UserRole>,
+
     #[col(now)]
     #[schema(value_type = String, format = DateTime)]
     pub created_at: TimestampTz,

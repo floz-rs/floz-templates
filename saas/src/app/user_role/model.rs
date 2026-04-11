@@ -4,8 +4,11 @@ use floz::prelude::*;
 pub struct UserRole {
     #[col(key, auto)]
     pub id: i32,
+    #[col(references("users", "id"), on_delete = "cascade")]
     pub user_id: i32,
+    #[col(references("organizations", "id"), on_delete = "cascade")]
     pub org_id: i32,
+    #[col(references("roles", "id"), on_delete = "cascade")]
     pub role_id: i32,
 }
 

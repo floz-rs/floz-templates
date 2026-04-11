@@ -7,6 +7,9 @@ pub struct User {
     pub email: Text,
     pub password_hash: Text,
 
+    #[rel(has_many(model = "crate::app::user_role::UserRole", foreign_key = "user_id"))]
+    pub user_roles: Vec<crate::app::user_role::UserRole>,
+
     #[col(now)]
     #[schema(value_type = String, format = DateTime)]
     pub created_at: TimestampTz,
