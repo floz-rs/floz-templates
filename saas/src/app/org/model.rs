@@ -1,13 +1,16 @@
 use floz::prelude::*;
 
-schema! {
-    model Organization("organizations") {
-        id: integer("id").auto_increment().primary(),
-        name: text("name"),
-        slug: text("slug"),
-        tier: text("tier"),
-        created_at: datetime("created_at").tz().now(),
-    }
+#[model("organizations", crud(tag = "Organizations", path = "/orgs"))]
+pub struct Organization {
+    #[col(key, auto)]
+    pub id: i32,
+    pub name: Text,
+    pub slug: Text,
+    pub tier: Text,
+
+    #[col(now)]
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: TimestampTz,
 }
 
 pub async fn create_table(db: &Db) {

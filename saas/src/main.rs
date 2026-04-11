@@ -20,16 +20,18 @@ async fn main() -> std::io::Result<()> {
                 .with_middleware(Cors::permissive())
                 .with_middleware(RequestTrace::default())
                 .with_middleware(Compression::gzip())
-                .with_middleware(middleware::auth::RequireAuth)
-                .with_middleware(middleware::tenant::RequireTenant)
+                // .with_middleware(middleware::auth::RequireAuth)
+                // .with_middleware(middleware::tenant::RequireTenant)
         )
         .on_start(|ctx: AppContext| async move {
             info!("🔐 Auth module enabled");
             info!("🏢 Multi-tenant architecture enabled");
 
             // Setup SQLite DB
+            app::role::model::create_table(&ctx.db()).await;
             app::user::model::create_table(&ctx.db()).await;
             app::org::model::create_table(&ctx.db()).await;
+            app::user_role::model::create_table(&ctx.db()).await;
         })
         .run()
         .await

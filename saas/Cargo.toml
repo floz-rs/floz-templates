@@ -12,11 +12,11 @@ sqlite = ["floz/sqlite", "sqlx/sqlite"]
 
 
 [dependencies]
-floz = { version = "0.1.3", features = ["full"] }
+floz = { path = "../../floz", features = ["full"] }
 tokio = { version = "1", features = ["full", "macros"] }
 sqlx = { version = "0.8", features = ["runtime-tokio"] }
 ntex = "3.7.1"
-utoipa = "5.4.0"
+utoipa = { version = "5.4.0", features = ["chrono", "uuid"] }
 tracing = "0.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

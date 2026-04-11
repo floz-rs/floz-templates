@@ -6,7 +6,7 @@
 
 use floz::prelude::*;
 
-#[model("notes")]
+#[model("notes", crud(tag = "Notes"))]
 pub struct Note {
     #[col(key, auto)]
     pub id: i32,
