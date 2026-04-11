@@ -13,7 +13,7 @@
 //! | DELETE /notes/{id}| Path, JsonResponse::no_content()                |
 
 use floz::prelude::*;
-use super::model::{Note, CreateNote, UpdateNote};
+use super::model::Note;
 use crate::AppState;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -80,13 +80,8 @@ async fn get_note(state: State, id: Path<i32>) -> Resp {
     desc: "Create a new note",
     resps: [(201, "Note created", Json<Note>)],
 )]
-async fn create_note(state: State, body: Json<CreateNote>) -> Resp {
-    let input = body.into_inner();
-    let note = Note {
-        title: input.title,
-        content: input.content,
-        ..Default::default()
-    };
+async fn create_note(state: State, body: Json<Note>) -> Resp {
+    let note = body.into_inner();
 
     match note.create(&state.db()).await {
         Ok(created) => JsonResponse::created(&created),
@@ -104,7 +99,7 @@ async fn create_note(state: State, body: Json<CreateNote>) -> Resp {
     desc: "Update a note",
     resps: [(200, "Note updated", Json<Note>), (404, "Note not found")],
 )]
-async fn update_note(state: State, id: Path<i32>, body: Json<UpdateNote>) -> Resp {
+async fn update_note(state: State, id: Path<i32>, body: Json<serde_json::Value>) -> Resp {
     let input = body.into_inner();
 
     // Find existing note
@@ -113,12 +108,12 @@ async fn update_note(state: State, id: Path<i32>, body: Json<UpdateNote>) -> Res
         Err(_) => return JsonResponse::not_found(&format!("Note {} not found", *id)),
     };
 
-    // Apply partial update
-    if let Some(t) = input.title {
-        existing.set_title(t);
+    // Apply partial update — only set fields that are present in the payload
+    if let Some(t) = input.get("title").and_then(|v| v.as_str()) {
+        existing.set_title(t.to_string());
     }
-    if let Some(c) = input.content {
-        existing.set_content(c);
+    if let Some(c) = input.get("content").and_then(|v| v.as_str()) {
+        existing.set_content(c.to_string());
     }
 
     match existing.save(&state.db()).await {
