@@ -7,7 +7,7 @@ A full-featured REST API template built with [floz](https://github.com/user/floz
 - ✅ **Auto-discovered routes** — `#[route]` macro, zero manual registration
 - ✅ **Middleware pipeline** — CORS, tracing, gzip compression, bearer auth
 - ✅ **ORM** — `schema!` macro with auto-CRUD (create, find, all, update, delete)
-- ✅ **Swagger UI** — auto-generated at `/docs`
+- ✅ **Swagger UI** — auto-generated at `/ui`
 - ✅ **Shared state** — custom `AppState` via `state.ext::<T>()`
 - ✅ **Structured errors** — `ApiError` + `ErrorCode` with JSON responses
 - ✅ **Pagination** — `PaginationParams` query extractor
@@ -32,7 +32,7 @@ Server starts at `http://localhost:3030`.
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/health` | ❌ | Health check |
-| GET | `/docs` | ❌ | Swagger UI |
+| GET | `/ui` | ❌ | Swagger UI |
 | GET | `/notes` | ✅ | List all notes |
 | GET | `/notes/{id}` | ✅ | Get note by ID |
 | POST | `/notes` | ✅ | Create a note |

@@ -5,11 +5,11 @@
 //! - Middleware pipeline (CORS, tracing, compression, auth)
 //! - ORM with `schema!` macro
 //! - Shared state via `AppContext` + extensions
-//! - Swagger UI at `/docs`
+//! - Swagger UI at `/ui`
 //! - Structured error handling
 //!
 //! Run: `cargo run`
-//! Docs: http://localhost:3030/docs
+//! Docs: http://localhost:3030/ui
 
 use floz::prelude::*;
 
@@ -44,7 +44,7 @@ async fn main() -> std::io::Result<()> {
                 .with_middleware(RequestTrace::default())
                 // 3. Compression — gzip responses > 1KB
                 .with_middleware(Compression::gzip())
-                // 4. Auth — bearer token validation (skips /health, /docs)
+                // 4. Auth — bearer token validation (skips /health, /ui)
                 .with_middleware(middleware::Auth::new(&jwt_secret)),
         )
         // Run migrations / seed data before accepting requests

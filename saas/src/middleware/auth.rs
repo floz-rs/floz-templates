@@ -5,13 +5,13 @@ pub struct RequireAuth;
 
 impl RequireAuth {
     fn is_public(path: &str) -> bool {
-        matches!(path, "/health" | "/docs" | "/users/register" | "/users/login")
+        matches!(path, "/health" | "/ui" | "/users/register" | "/users/login")
             || path.starts_with("/api-docs")
     }
 }
 
-impl Middleware for RequireAuth {
-    fn handle(&self, req: &Req) -> Option<Resp> {
+impl AsyncMiddleware for RequireAuth {
+    async fn handle(&self, req: &Req) -> Option<Resp> {
         if Self::is_public(req.path()) {
             return None;
         }
@@ -23,7 +23,8 @@ impl Middleware for RequireAuth {
 
         match header {
             Some(t) if t.starts_with("Bearer ") => {
-                // In a real SaaS, decode the JWT here and insert into req extensions.
+                // In a real SaaS, decode the JWT here and validate against the DB.
+                // This is async-ready: you can `.await` a DB query here.
                 None 
             },
             _ => Some(

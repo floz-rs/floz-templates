@@ -5,7 +5,7 @@ use floz::prelude::*;
 /// Bearer token authentication middleware.
 ///
 /// Validates `Authorization: Bearer <token>` on protected routes.
-/// Skips authentication for public paths: `/health`, `/docs`, `/api-docs`.
+/// Skips authentication for public paths: `/health`, `/ui`, `/api-docs`.
 ///
 /// # Usage
 /// ```ignore
@@ -34,7 +34,7 @@ impl Auth {
 
     /// Check if a path is public (no auth required).
     fn is_public(path: &str) -> bool {
-        matches!(path, "/health" | "/docs")
+        matches!(path, "/health" | "/ui")
             || path.starts_with("/api-docs")
     }
 }
