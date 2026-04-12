@@ -34,7 +34,6 @@ pub async fn register(state: State, body: Json<AuthInput>) -> Resp {
     resps: [(200, "Logged In")]
 )]
 pub async fn login(state: State, body: Json<AuthInput>) -> Resp {
-    // Fetch all users and filter (in a real app, use a targeted query or custom ORM finder method)
     let users = match User::all(&state.db()).await {
         Ok(u) => u,
         Err(_) => return Resp::Unauthorized().json(&serde_json::json!({
@@ -57,5 +56,47 @@ pub async fn login(state: State, body: Json<AuthInput>) -> Resp {
             "error": "unauthorized",
             "message": "Invalid credentials"
         })),
+    }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Cached routes — declarative caching examples
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/// List all users — cached for 5 minutes.
+///
+/// When any row in the `users` table is inserted, updated, or deleted,
+/// the outbox sweeper automatically purges this cache entry.
+#[route(
+    get: "/users/cached",
+    tag: "Users",
+    desc: "List all users (cached 5 min)",
+    cache(ttl = 300, watch = ["users"]),
+)]
+pub async fn list_users_cached(state: State) -> Resp {
+    match User::all(&state.db()).await {
+        Ok(users) => JsonResponse::ok(&users),
+        Err(e) => JsonResponse::error(&e.to_string()),
+    }
+}
+
+/// Get a single user by ID — cached for 10 minutes.
+///
+/// The `watch` tag `"users:{id}"` means this cache entry is only
+/// invalidated when that specific user row changes, not the entire table.
+#[route(
+    get: "/users/cached/:id",
+    tag: "Users",
+    desc: "Get user by ID (cached 10 min)",
+    cache(ttl = 600, watch = ["users", "users:{id}"]),
+)]
+pub async fn get_user_cached(state: State, id: Path<i32>) -> Resp {
+    match User::find(id.into_inner(), &state.db()).await {
+        Ok(Some(user)) => JsonResponse::ok(&user),
+        Ok(None) => Resp::NotFound().json(&serde_json::json!({
+            "error": "not_found",
+            "message": "User not found"
+        })),
+        Err(e) => JsonResponse::error(&e.to_string()),
     }
 }

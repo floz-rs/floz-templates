@@ -1,0 +1,51 @@
+{
+  "name": "Organization",
+  "table_name": "organizations",
+  "db_columns": [
+    {
+      "rust_name": "id",
+      "column_name": "id",
+      "type_info": "Integer",
+      "modifiers": [
+        "Primary",
+        "AutoIncrement"
+      ]
+    },
+    {
+      "rust_name": "name",
+      "column_name": "name",
+      "type_info": "Text",
+      "modifiers": []
+    },
+    {
+      "rust_name": "slug",
+      "column_name": "slug",
+      "type_info": "Text",
+      "modifiers": []
+    },
+    {
+      "rust_name": "tier",
+      "column_name": "tier",
+      "type_info": "Text",
+      "modifiers": []
+    },
+    {
+      "rust_name": "created_at",
+      "column_name": "created_at",
+      "type_info": "DateTime",
+      "modifiers": [
+        "Now",
+        "Tz"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "rust_name": "user_roles",
+      "target_model": "crate::app::user_role::UserRole",
+      "fk_column": "org_id",
+      "relation_type": "HasMany"
+    }
+  ],
+  "constraints": []
+}

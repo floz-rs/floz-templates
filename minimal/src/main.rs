@@ -6,8 +6,10 @@ async fn main() -> std::io::Result<()> {
         .server(
             ServerConfig::new()
                 .with_default_port(3030)
+                .with_middleware(SecurityHeaders::default())
                 .with_middleware(Cors::permissive())
                 .with_middleware(RequestTrace::default())
+                .with_middleware(SessionMiddleware::new())
         )
         .run()
         .await

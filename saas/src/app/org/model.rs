@@ -1,13 +1,19 @@
 use floz::prelude::*;
 
-schema! {
-    model Organization("organizations") {
-        id: integer("id").auto_increment().primary(),
-        name: text("name"),
-        slug: text("slug"),
-        tier: text("tier"),
-        created_at: datetime("created_at").tz().now(),
-    }
+#[model("organizations", crud(tag = "Organizations", path = "/orgs"))]
+pub struct Organization {
+    #[col(key, auto)]
+    pub id: i32,
+    pub name: Text,
+    pub slug: Text,
+    pub tier: Text,
+
+    #[rel(has_many(model = "crate::app::user_role::UserRole", foreign_key = "org_id"))]
+    pub user_roles: Vec<crate::app::user_role::UserRole>,
+
+    #[col(now)]
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: TimestampTz,
 }
 
 pub async fn create_table(db: &Db) {

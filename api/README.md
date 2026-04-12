@@ -6,12 +6,13 @@ A full-featured REST API template built with [floz](https://github.com/user/floz
 
 - ✅ **Auto-discovered routes** — `#[route]` macro, zero manual registration
 - ✅ **Middleware pipeline** — CORS, tracing, gzip compression, bearer auth
-- ✅ **ORM** — `schema!` macro with auto-CRUD (create, find, all, update, delete)
-- ✅ **Swagger UI** — auto-generated at `/docs`
+- ✅ **ORM** — `#[model]` macro with auto-CRUD (create, find, all, update, delete)
+- ✅ **Swagger UI** — auto-generated at `/ui`
 - ✅ **Shared state** — custom `AppState` via `state.ext::<T>()`
 - ✅ **Structured errors** — `ApiError` + `ErrorCode` with JSON responses
 - ✅ **Pagination** — `PaginationParams` query extractor
 - ✅ **Startup hooks** — `on_start` for migrations / seeding
+- ✅ **Soft Deletes** — implicit scope filtering on `deleted_at` fields
 
 ## Quick Start
 
@@ -32,7 +33,7 @@ Server starts at `http://localhost:3030`.
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/health` | ❌ | Health check |
-| GET | `/docs` | ❌ | Swagger UI |
+| GET | `/ui` | ❌ | Swagger UI |
 | GET | `/notes` | ✅ | List all notes |
 | GET | `/notes/{id}` | ✅ | Get note by ID |
 | POST | `/notes` | ✅ | Create a note |
@@ -85,7 +86,7 @@ src/
     ├── mod.rs           # Module barrel
     └── note/
         ├── mod.rs       # Note module barrel
-        ├── model.rs     # schema! + ORM model + DTOs
+        ├── model.rs     # #[model] + ORM model + DTOs
         └── routes.rs    # CRUD handlers with #[route]
 ```
 
@@ -93,6 +94,6 @@ src/
 
 1. Create `src/app/todo/mod.rs`, `model.rs`, `routes.rs`
 2. Add `pub mod todo;` to `src/app/mod.rs`
-3. Define your model with `schema!`
+3. Define your model with `#[model]`
 4. Add route handlers with `#[route]`
 5. That's it — routes are auto-discovered, no wiring needed

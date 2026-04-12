@@ -3,18 +3,17 @@
 //! A full-featured API template demonstrating every floz capability:
 //! - Auto-discovered routes via `#[route]`
 //! - Middleware pipeline (CORS, tracing, compression, auth)
-//! - ORM with `schema!` macro
+//! - ORM with `#[model]` macro
 //! - Shared state via `AppContext` + extensions
-//! - Swagger UI at `/docs`
+//! - Swagger UI at `/ui`
 //! - Structured error handling
 //!
 //! Run: `cargo run`
-//! Docs: http://localhost:3030/docs
+//! Docs: http://localhost:3030/ui
 
 use floz::prelude::*;
 
-mod app;
-mod middleware;
+use starter_api::app;
 
 /// Custom application state — available via `state.ext::<AppState>()`
 #[derive(Clone)]
@@ -38,17 +37,19 @@ async fn main() -> std::io::Result<()> {
         .server(
             ServerConfig::new()
                 .with_default_port(3030)
+                // 0. Security — inject X-Content-Type-Options, X-Frame-Options, CSP, etc.
+                .with_middleware(SecurityHeaders::default())
                 // 1. CORS — handle preflight OPTIONS, allow all origins
                 .with_middleware(Cors::permissive())
                 // 2. Tracing — structured request/response logging
                 .with_middleware(RequestTrace::default())
-                // 3. Compression — gzip responses > 1KB
-                .with_middleware(Compression::gzip())
-                // 4. Auth — bearer token validation (skips /health, /docs)
-                .with_middleware(middleware::Auth::new(&jwt_secret)),
+                .with_middleware(SessionMiddleware::new())
+
+                // 4. Auth — dynamic bearer token / session declarative checking
+                .with_async_middleware(AuthMiddleware),
         )
         // Run migrations / seed data before accepting requests
-        .on_start(|ctx| async move {
+        .on_start(|ctx: AppContext| async move {
             let db = ctx.db();
             // Create table if not exists
             app::note::model::create_table(&db).await;

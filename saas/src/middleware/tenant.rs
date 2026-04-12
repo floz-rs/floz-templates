@@ -5,19 +5,19 @@ pub struct RequireTenant;
 
 impl RequireTenant {
     fn is_public(path: &str) -> bool {
-        matches!(path, "/health" | "/docs" | "/users/register" | "/users/login")
+        matches!(path, "/health" | "/ui" | "/users/register" | "/users/login")
             || path.starts_with("/api-docs")
     }
 }
 
-impl Middleware for RequireTenant {
-    fn handle(&self, req: &Req) -> Option<Resp> {
+impl AsyncMiddleware for RequireTenant {
+    async fn handle(&self, req: &Req) -> Option<Resp> {
         if Self::is_public(req.path()) {
             return None;
         }
 
-        // In a real SaaS, this might be resolved from the subodmain (tenant.myapp.com)
-        // or a specific HTTP header. We'll enforce a header here.
+        // In a real SaaS, this might be resolved from the subdomain (tenant.myapp.com)
+        // or a specific HTTP header. This is async-ready: you can `.await` a DB query here.
         let tenant_id = req
             .headers()
             .get("X-Tenant-Id")
