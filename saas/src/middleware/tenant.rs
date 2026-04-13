@@ -24,12 +24,10 @@ impl AsyncMiddleware for RequireTenant {
             .and_then(|v| v.to_str().ok());
 
         if tenant_id.is_none() {
-            return Some(
-                Resp::BadRequest().json(&serde_json::json!({
-                    "error": "missing_tenant",
-                    "message": "X-Tenant-Id header is required for this operation"
-                })),
-            );
+            return Some(Resp::BadRequest().json(&serde_json::json!({
+                "error": "missing_tenant",
+                "message": "X-Tenant-Id header is required for this operation"
+            })));
         }
 
         None

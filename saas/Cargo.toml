@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [features]
-default = ["sqlite", "openapi"]
+default = ["postgres", "openapi"]
 openapi = ["floz/openapi"]
 postgres = ["floz/postgres", "sqlx/postgres"]
 sqlite = ["floz/sqlite", "sqlx/sqlite"]
@@ -22,6 +22,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1", features = ["v4", "serde"] }
+futures-util = "0.3"
 
 [[bin]]
 name = "seed"

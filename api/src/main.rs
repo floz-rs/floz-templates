@@ -24,8 +24,8 @@ pub struct AppState {
 
 #[floz::main]
 async fn main() -> std::io::Result<()> {
-    let jwt_secret = std::env::var("JWT_SECRET")
-        .unwrap_or_else(|_| "dev-secret-change-me".to_string());
+    let jwt_secret =
+        std::env::var("JWT_SECRET").unwrap_or_else(|_| "dev-secret-change-me".to_string());
 
     App::new()
         // Custom shared state — accessible in handlers and middleware
@@ -44,7 +44,6 @@ async fn main() -> std::io::Result<()> {
                 // 2. Tracing — structured request/response logging
                 .with_middleware(RequestTrace::default())
                 .with_middleware(SessionMiddleware::new())
-
                 // 4. Auth — dynamic bearer token / session declarative checking
                 .with_async_middleware(AuthMiddleware),
         )

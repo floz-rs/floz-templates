@@ -6,6 +6,7 @@ pub struct User {
     pub id: i32,
     pub email: Text,
     pub password_hash: Text,
+    pub change1: Text,
 
     #[rel(has_many(model = "crate::app::user_role::UserRole", foreign_key = "user_id"))]
     pub user_roles: Vec<crate::app::user_role::UserRole>,

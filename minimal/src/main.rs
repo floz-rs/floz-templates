@@ -9,7 +9,7 @@ async fn main() -> std::io::Result<()> {
                 .with_middleware(SecurityHeaders::default())
                 .with_middleware(Cors::permissive())
                 .with_middleware(RequestTrace::default())
-                .with_middleware(SessionMiddleware::new())
+                .with_middleware(SessionMiddleware::new()),
         )
         .run()
         .await

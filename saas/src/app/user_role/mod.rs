@@ -1,3 +1,3 @@
 pub mod model;
 
-pub use model::{UserRole, UserRoleTable, create_table};
+pub use model::{create_table, UserRole, UserRoleTable};
